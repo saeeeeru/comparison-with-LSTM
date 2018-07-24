@@ -71,7 +71,7 @@ def main():
 	dataset = dataframe.values.astype('float32')
 	dataset = Normalize(dataset)
 
-	# create dataset
+	# create dataset 
 	length = len(dataset)
 	train_size = int(length * 0.67)
 	test_size = length - train_size
@@ -125,14 +125,19 @@ def main():
 		plt.close()
 
 	# plot the forecasting results on test dataset
-	if PLT:
+	if not PLT:
 		plt.ion()
 		i = 0
 		while i < 20:
-			plt.plot(range(i,i+Tau+Ls+1), test[length_test%BATCH_SIZE:][i:i+Tau+Ls+1,0],color='silver', label='original')
-			plt.plot(range(i,i+Tau),testX[i,:,0], color='dodgerblue', label='input')
-			plt.scatter(i+Tau+Ls, predicted[i,0], s=15, color='orange',label='forecast')
-			plt.legend(); plt.draw(); plt.pause(1.5); plt.clf()
+			fig = plt.figure(figsize=(8,3*4))
+			plt.subplots_adjust(hspace=0.2)
+			for j in range(3):
+				plt.subplot(3,1,j+1)
+				plt.plot(range(i,i+Tau+Ls+1), test[length_test%BATCH_SIZE:][i:i+Tau+Ls+1,j],color='silver', label='original')
+				plt.plot(range(i,i+Tau),testX[i,:,j], color='dodgerblue', label='input')
+				plt.scatter(i+Tau+Ls, predicted[i,j], s=15, color='orange',label='forecast')
+				plt.legend()
+			plt.draw(); plt.pause(1.2); plt.clf()
 			i += 1
 		plt.close()
 
