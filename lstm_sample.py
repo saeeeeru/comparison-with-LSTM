@@ -69,6 +69,7 @@ def main():
 	dataframe = generate_sine_data()
 
 	dataset = dataframe.values.astype('float32')
+	# put dataset of multiple time-series sequences
 	dataset = Normalize(dataset)
 
 	# create dataset 
@@ -125,14 +126,15 @@ def main():
 		plt.close()
 
 	# plot the forecasting results on test dataset
-	if not PLT:
+	if PLT:
 		plt.ion()
 		i = 0
 		while i < 20:
-			fig = plt.figure(figsize=(8,3*4))
+			K = 3 # the number of sensor
+			fig = plt.figure(figsize=(8,K*4))
 			plt.subplots_adjust(hspace=0.2)
-			for j in range(3):
-				plt.subplot(3,1,j+1)
+			for j in range(K):
+				plt.subplot(K,1,j+1)
 				plt.plot(range(i,i+Tau+Ls+1), test[length_test%BATCH_SIZE:][i:i+Tau+Ls+1,j],color='silver', label='original')
 				plt.plot(range(i,i+Tau),testX[i,:,j], color='dodgerblue', label='input')
 				plt.scatter(i+Tau+Ls, predicted[i,j], s=15, color='orange',label='forecast')
