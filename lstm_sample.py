@@ -67,6 +67,7 @@ def main():
 
 	# generate multiple time-series sequences
 	dataframe = generate_sine_data()
+
 	dataset = dataframe.values.astype('float32')
 	dataset = Normalize(dataset)
 
@@ -81,6 +82,7 @@ def main():
 
 	trainX = trainX[len(trainX)%BATCH_SIZE:]
 	trainY = trainY[len(trainY)%BATCH_SIZE:]
+	length_test = len(testX)
 	testX = testX[len(testX)%BATCH_SIZE:]
 	testY = testY[len(testY)%BATCH_SIZE:]
 
@@ -97,6 +99,7 @@ def main():
 	# learn the DNN model on training dataset
 	hist = model.fit(trainX, trainY, batch_size=BATCH_SIZE, epochs=EPOCHS, verbose=0, shuffle=True)
 
+	# plot the leargning curve
 	if PLT:
 		epochs = range(1,11)
 		plt.figure()
@@ -113,11 +116,24 @@ def main():
 	# forecast Ls-steps-ahead value on the test dataset
 	predicted = model.predict(testX, batch_size=BATCH_SIZE)
 
+	# plot testY and predictedY
 	if PLT:
 		df_out = pd.DataFrame(predicted[:200])
 		df_out.columns = ["predicted_sine",'predicted_sine_rand','predicted_sine_int']
 		df_out = pd.concat([df_out,pd.DataFrame(testY[:200],columns=["input_sine","input_sine_rand","input_sine_int"])])
 		plt.figure(); df_out.plot(); plt.show()
+		plt.close()
+
+	# plot the forecasting results on test dataset
+	if PLT:
+		plt.ion()
+		i = 0
+		while i < 20:
+			plt.plot(range(i,i+Tau+Ls+1), test[length_test%BATCH_SIZE:][i:i+Tau+Ls+1,0],color='silver', label='original')
+			plt.plot(range(i,i+Tau),testX[i,:,0], color='dodgerblue', label='input')
+			plt.scatter(i+Tau+Ls, predicted[i,0], s=15, color='orange',label='forecast')
+			plt.legend(); plt.draw(); plt.pause(1.5); plt.clf()
+			i += 1
 		plt.close()
 
 	end = time.time()
