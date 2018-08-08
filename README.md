@@ -4,7 +4,7 @@ This is a code for forecasting experiments using LSTM
 ## Usage
 ### requirements
 - Written for Python 3.x
-- Please chech required Python library in ./requirements.txt
+- Please check required Python library in ./requirements.txt
 
 ### Installation
 1. Install required Python library
